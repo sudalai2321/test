@@ -352,29 +352,27 @@
                     </div>
 
 <div>
-    <label class="block text-sm font-medium text-slate-700 dark:text-green-100 mb-2">Event Selection (Choose 1)</label>
-    <select name="event_choice" required class="w-full px-5 py-4 rounded-2xl border border-slate-300 dark:border-brand-500/30 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition appearance-none font-medium shadow-sm">
-        <option value="" disabled selected>Select an event...</option>
-        <option value="Ink Free Web">💻 Ink Free Web (Web Design)</option>
-        <option value="Inkless Ideas">📱 Inkless Ideas (Mobile Summary)</option>
-        <option value="Think Inkless">💡 Think Inkless (Idea Presentation)</option>
-    </select>
-</div>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-green-100 mb-2">Event Selection (Choose 1)</label>
+                        <select name="event_choice" required class="w-full px-5 py-4 rounded-2xl border border-slate-300 dark:border-brand-500/30 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition appearance-none font-medium shadow-sm">
+                            <option value="" disabled selected>Select an event...</option>
+                            <option value="Ink Free Web">💻 Ink Free Web (Web Design)</option>
+                            <option value="Inkless Ideas">📱 Inkless Ideas (Mobile Summary)</option>
+                            <option value="Think Inkless">💡 Think Inkless (Idea Presentation)</option>
+                        </select>
+                    </div>
 
-<div id="think-inkless-status" class="hidden mt-4 p-5 rounded-2xl bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/50 transition-all shadow-sm">
-    <div class="flex justify-between items-end mb-2">
-        <span class="text-sm font-semibold text-orange-800 dark:text-orange-200">Think Inkless Spots Filled</span>
-        <span id="inkless-count-text" class="text-lg font-bold text-orange-600 dark:text-orange-400 font-heading">0 / 25</span>
-    </div>
-    <div class="w-full bg-orange-200 dark:bg-orange-900/50 rounded-full h-2.5 mb-3 overflow-hidden shadow-inner">
-        <div id="inkless-progress-bar" class="bg-gradient-to-r from-orange-400 to-orange-500 h-2.5 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
-    </div>
-    <p id="inkless-warning-msg" class="text-sm text-red-600 dark:text-red-400 font-medium hidden bg-red-50 dark:bg-red-900/20 p-3 rounded-xl border border-red-100 dark:border-red-800/30">
-        ⚠️ Maximum participants (25) reached for this event. Please try participating in another event.
-    </p>
-</div>
-
-                    
+                    <div id="think-inkless-status" class="hidden mt-4 p-5 rounded-2xl bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/50 transition-all shadow-sm">
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="text-sm font-semibold text-orange-800 dark:text-orange-200">Think Inkless Spots Filled</span>
+                            <span id="inkless-count-text" class="text-lg font-bold text-orange-600 dark:text-orange-400 font-heading">0 / 25</span>
+                        </div>
+                        <div class="w-full bg-orange-200 dark:bg-orange-900/50 rounded-full h-2.5 mb-3 overflow-hidden shadow-inner">
+                            <div id="inkless-progress-bar" class="bg-gradient-to-r from-orange-400 to-orange-500 h-2.5 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+                        </div>
+                        <p id="inkless-warning-msg" class="text-sm text-red-600 dark:text-red-400 font-medium hidden bg-red-50 dark:bg-red-900/20 p-3 rounded-xl border border-red-100 dark:border-red-800/30">
+                            ⚠️ Maximum participants (25) reached for this event. Please try participating in another event.
+                        </p>
+                    </div>
                     <div class="pt-6">
                         <button type="submit" id="submit-button" class="w-full py-4 bg-gradient-to-r from-brand-500 to-teal-500 hover:from-brand-600 hover:to-teal-600 text-white font-bold rounded-2xl shadow-xl transition-all text-lg transform hover:-translate-y-1">
                             Complete Digital Registration
@@ -520,7 +518,7 @@
               errorModal = document.getElementById("error-modal");
 
         // YOUR EXACT GOOGLE SCRIPT WEB APP URL
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzX_gxLkRJu5r3-QrFgmrXdQ_sOgBqvAza0WFGDzgXTMTg6NXFaQpy8e6Vh_W_BhA75Xw/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbym13IlsK5TqBZ2lpLMkKRRWWtvJpEW6cBEpNBwr6vjnMEfFKu1GOE4D8zdn56WeK1Dnw/exec';
 
         if (form) {
             form.addEventListener("submit", e => {
