@@ -518,7 +518,7 @@
               errorModal = document.getElementById("error-modal");
 
         // YOUR EXACT GOOGLE SCRIPT WEB APP URL
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbym13IlsK5TqBZ2lpLMkKRRWWtvJpEW6cBEpNBwr6vjnMEfFKu1GOE4D8zdn56WeK1Dnw/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxTlaG-VBYEMsAA_pfC9nsPUse0PAo7O5Lxk2AFWchTWJ9YG82KjdSepzorAvaAuPCabw/exec';
 
         if (form) {
             form.addEventListener("submit", e => {
@@ -590,6 +590,65 @@
             errorModal.classList.add('hidden'); 
             errorModal.classList.remove('block');
         }
+
+function closeModal() {
+            modalBack.style.display = "none"; 
+            successModal.classList.add('hidden'); 
+            successModal.classList.remove('block'); 
+            errorModal.classList.add('hidden'); 
+            errorModal.classList.remove('block');
+        }
+
+        // PASTE THE NEW JAVASCRIPT HERE
+        // --- 6.5 EVENT LIMIT LOGIC ---
+        const MAX_THINK_INKLESS = 25;
+        // NOTE: For a real application, you must fetch this number from your Google Sheet!
+        let currentThinkInklessCount = 0; 
+
+        const eventSelect = document.querySelector('select[name="event_choice"]');
+        const statusContainer = document.getElementById('think-inkless-status');
+        const countText = document.getElementById('inkless-count-text');
+        const progressBar = document.getElementById('inkless-progress-bar');
+        const warningMsg = document.getElementById('inkless-warning-msg');
+
+        // Function to simulate getting the count
+        function fetchEventCounts() {
+            // MOCK DATA: Change this number to test the logic (e.g., set to 25 to see it lock)
+            currentThinkInklessCount = 18; 
+            updateEventStatusUI();
+        }
+
+        function updateEventStatusUI() {
+            if (eventSelect.value === 'Think Inkless') {
+                statusContainer.classList.remove('hidden');
+                countText.innerText = `${currentThinkInklessCount} / ${MAX_THINK_INKLESS}`;
+                const percentage = Math.min((currentThinkInklessCount / MAX_THINK_INKLESS) * 100, 100);
+                progressBar.style.width = `${percentage}%`;
+
+                if (currentThinkInklessCount >= MAX_THINK_INKLESS) {
+                    progressBar.classList.replace('from-orange-400', 'from-red-500');
+                    progressBar.classList.replace('to-orange-500', 'to-red-600');
+                    warningMsg.classList.remove('hidden');
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+                } else {
+                    progressBar.classList.replace('from-red-500', 'from-orange-400');
+                    progressBar.classList.replace('to-red-600', 'to-orange-500');
+                    warningMsg.classList.add('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+                }
+            } else {
+                statusContainer.classList.add('hidden');
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+            }
+        }
+
+        eventSelect.addEventListener('change', updateEventStatusUI);
+        fetchEventCounts();
+        // END OF NEW JAVASCRIPT
+
 
         // --- 7. PARTICLES ---
         tsParticles.load("particles-container", { fpsLimit: 60, particles: { color: { value: "#22c55e" }, links: { color: "#14b8a6", distance: 150, enable: true, opacity: 0.2, width: 1 }, move: { enable: true, speed: 1 }, number: { density: { enable: true, area: 800 }, value: 40 }, opacity: { value: 0.5 }, size: { value: { min: 1, max: 3 } } }, detectRetina: true });
