@@ -599,10 +599,9 @@ function closeModal() {
             errorModal.classList.remove('block');
         }
 
-        // PASTE THE NEW JAVASCRIPT HERE
+// PASTE THE NEW JAVASCRIPT HERE
         // --- 6.5 EVENT LIMIT LOGIC ---
         const MAX_THINK_INKLESS = 25;
-        // NOTE: For a real application, you must fetch this number from your Google Sheet!
         let currentThinkInklessCount = 0; 
 
         const eventSelect = document.querySelector('select[name="event_choice"]');
@@ -611,11 +610,26 @@ function closeModal() {
         const progressBar = document.getElementById('inkless-progress-bar');
         const warningMsg = document.getElementById('inkless-warning-msg');
 
-        // Function to simulate getting the count
+        // Function to fetch the LIVE count from Google Sheets
         function fetchEventCounts() {
-            // MOCK DATA: Change this number to test the logic (e.g., set to 25 to see it lock)
-            currentThinkInklessCount = 18; 
-            updateEventStatusUI();
+            // Show loading text while it checks the Google Sheet
+            countText.innerText = `Loading...`;
+            
+            fetch(scriptURL)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Update with the REAL number from your sheet
+                        currentThinkInklessCount = data.count;
+                        updateEventStatusUI(); 
+                    } else {
+                        countText.innerText = `Error loading count`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching event count:', error);
+                    countText.innerText = `0 / 25 (Offline)`;
+                });
         }
 
         function updateEventStatusUI() {
