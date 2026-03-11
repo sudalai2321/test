@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paperless Day 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; overflow-x: hidden; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Outfit', sans-serif; }
+        
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #86efac; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #14532d; }
+
+        /* Backgrounds */
+        #particles-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none; }
+        html.light #particles-container { background: linear-gradient(135deg, #f0fdf4 0%, #ccfbf1 100%); }
+        html.dark #particles-container { background: linear-gradient(135deg, #022c22 0%, #064e3b 100%); }
+
+        /* Glassmorphism UI */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        .dark .glass-panel {
+            background: rgba(2, 44, 34, 0.4);
+            border: 1px solid rgba(34, 197, 94, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Animations & Reveals */
+        .page { display: none; opacity: 0; }
+        .page.active { display: block; animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .hover-card { transition: all 0.3s ease; }
+        .hover-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -10px rgba(34, 197, 94, 0.25); border-color: rgba(34, 197, 94, 0.5); }
+
+        .gradient-text {
+            background: linear-gradient(to right, #22c55e, #14b8a6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* Mobile Dock */
+        .mobile-dock {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 95%; max-width: 420px;
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px);
+            border-radius: 24px; padding: 12px 10px;
+            display: flex; justify-content: space-around; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.5); z-index: 50;
+        }
+        .dark .mobile-dock {
+            background: rgba(2, 44, 34, 0.85); border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .mobile-icon-btn { display: flex; flex-direction: column; align-items: center; color: #64748b; font-size: 0.65rem; font-weight: 600; transition: 0.2s; }
+        .dark .mobile-icon-btn { color: #94a3b8; }
+        .mobile-icon-btn.active { color: #22c55e; transform: translateY(-4px); }
+        .mobile-icon-btn svg { width: 22px; height: 22px; margin-bottom: 2px; }
+        
+        #modal-backdrop, #loading-backdrop { display: none; position: fixed; inset: 0; z-index: 60; background: rgba(2, 44, 34, 0.8); backdrop-filter: blur(6px); justify-content: center; align-items: center; }
+        .spinner { width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #22c55e; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .ticket-card { background-image: radial-gradient(circle at 0 0, transparent 15px, white 16px), radial-gradient(circle at 100% 0, transparent 15px, white 16px), radial-gradient(circle at 100% 100%, transparent 15px, white 16px), radial-gradient(circle at 0 100%, transparent 15px, white 16px); }
+        .dark .ticket-card { background-image: radial-gradient(circle at 0 0, transparent 15px, #064e3b 16px), radial-gradient(circle at 100% 0, transparent 15px, #064e3b 16px), radial-gradient(circle at 100% 100%, transparent 15px, #064e3b 16px), radial-gradient(circle at 0 100%, transparent 15px, #064e3b 16px); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-[#022c22] dark:text-slate-100">
+
+    <div id="particles-container"></div>
+    <div id="toast-container" class="fixed top-24 right-5 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+    <header class="hidden sm:block fixed w-full top-0 z-40 glass-panel rounded-none border-t-0 border-x-0">
+        <nav class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex flex-col cursor-pointer" onclick="showPage('home')">
+                <span class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white font-heading">PAPERLESS<span class="text-brand-500">DAY</span></span>
+                <span class="text-[10px] font-bold tracking-[0.2em] text-green-600 dark:text-green-400 uppercase">Go Green, Go Digital 2026</span>
+            </div>
+            <div class="flex items-center space-x-8">
+                <a href="#" class="nav-link text-sm font-medium hover:text-brand-500 transition-colors" data-page="home">Home</a>
+                <a href="#" class="nav-link text-sm font-medium hover:text-brand-500 transition-colors" data-page="details">Events & Rules</a>
+                <a href="#" class="nav-link text-sm font-medium hover:text-brand-500 transition-colors" data-page="register">Register</a>
+                <a href="#" class="nav-link text-sm font-medium hover:text-brand-500 transition-colors" data-page="about">Contact Us</a>
+                
+                <button id="theme-toggle" class="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-yellow-400 hover:bg-slate-300/50 dark:hover:bg-slate-700/50 transition-colors">
+                    <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <header class="sm:hidden fixed w-full top-0 z-40 glass-panel rounded-none border-t-0 border-x-0 px-4 h-16 flex justify-between items-center">
+        <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white font-heading">PAPERLESS<span class="text-brand-500">DAY</span></span>
+        <button id="theme-toggle-mobile" class="p-2.5 rounded-full bg-slate-200/50 dark:bg-slate-800/50 text-slate-600 dark:text-yellow-400 transition-colors">
+             <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+             <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+        </button>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 mb-24">
+
+        <main id="page-home" class="page active">
+            <div class="flex flex-col lg:flex-row items-center gap-12 mb-20">
+                <div class="lg:w-1/2 text-center lg:text-left z-10 reveal">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 glass-panel rounded-full text-brand-700 dark:text-brand-300 text-sm font-bold mb-6 tracking-wide uppercase shadow-sm">
+                        <span class="relative flex h-3 w-3">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
+                        </span>
+                        17th March 2026
+                    </div>
+                    <h1 class="text-5xl lg:text-7xl font-extrabold leading-tight text-slate-900 dark:text-white mb-6 font-heading">
+                        Go Green, <br/>
+                        <span class="gradient-text">Go Digital.</span>
+                    </h1>
+                    <p class="text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+                        Join us in observance of Forest Day! Paperless Day 2026 promotes environmental awareness where <strong>strictly no paper is allowed</strong>. Everything from communication to presentation is 100% digital.
+                    </p>
+                    
+                    <div class="flex justify-center lg:justify-start gap-4 mb-10" id="countdown">
+                        <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-2xl text-center min-w-[80px] shadow-sm">
+                            <div class="text-3xl font-bold text-slate-900 dark:text-white font-heading" id="days">00</div>
+                            <div class="text-xs text-brand-600 dark:text-brand-400 font-bold uppercase mt-1">Days</div>
+                        </div>
+                        <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-2xl text-center min-w-[80px] shadow-sm">
+                            <div class="text-3xl font-bold text-slate-900 dark:text-white font-heading" id="hours">00</div>
+                            <div class="text-xs text-brand-600 dark:text-brand-400 font-bold uppercase mt-1">Hours</div>
+                        </div>
+                        <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-2xl text-center min-w-[80px] shadow-sm">
+                            <div class="text-3xl font-bold text-slate-900 dark:text-white font-heading" id="mins">00</div>
+                            <div class="text-xs text-brand-600 dark:text-brand-400 font-bold uppercase mt-1">Mins</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <button class="nav-link-button px-8 py-4 bg-gradient-to-r from-brand-500 to-teal-500 text-white font-bold rounded-xl shadow-xl transition-all hover:-translate-y-1" data-page="register">
+                            Register Now
+                        </button>
+                        <button class="nav-link-button px-8 py-4 glass-panel text-slate-700 dark:text-slate-100 font-bold rounded-xl hover:bg-white/40 dark:hover:bg-[#022c22]/40 transition-all" data-page="details">
+                            View Events
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:w-1/2 reveal delay-100">
+                    <div class="relative rounded-[2.5rem] overflow-hidden glass-panel p-8 hover-card shadow-2xl">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white/50 dark:bg-slate-900/50 p-6 rounded-2xl border border-white/20 dark:border-brand-500/10">
+                                <h3 class="font-bold text-slate-800 dark:text-white text-lg">Strictly Digital</h3>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Zero Paper Allowed</p>
+                            </div>
+                            <div class="bg-white/50 dark:bg-slate-900/50 p-6 rounded-2xl border border-white/20 dark:border-brand-500/10">
+                                <h3 class="font-bold text-slate-800 dark:text-white text-lg">Participants</h3>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Capped at 200 Total</p>
+                            </div>
+                            <div class="bg-white/50 dark:bg-slate-900/50 p-6 rounded-2xl border border-white/20 dark:border-brand-500/10">
+                                <h3 class="font-bold text-slate-800 dark:text-white text-lg">Format</h3>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Individual Participation</p>
+                            </div>
+                            <div class="bg-white/50 dark:bg-slate-900/50 p-6 rounded-2xl border border-white/20 dark:border-brand-500/10">
+                                <h3 class="font-bold text-slate-800 dark:text-white text-lg">Eligibility</h3>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Exclusive to B.Tech IT</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="max-w-4xl mx-auto glass-panel rounded-3xl shadow-xl p-8 md:p-12 reveal delay-200">
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-6 font-heading">About the Initiative</h2>
+                <div class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
+                    <p class="mb-4">Organized by the Tech Titans Association, Department of Information Technology, <strong>Paperless Day 2026</strong> is held in observance of Forest Day. Our goal is to promote forest conservation, sustainable development, and responsible digital practices on campus.</p>
+                    <p>On this day, participants will completely abandon paper in favor of digital platforms for all communication, documentation, and presentations. Join us in making a sustainable impact through three distinct, simultaneous digital challenges!</p>
+                </div>
+            </section>
+        </main>
+
+        <main id="page-details" class="page">
+            <section class="max-w-5xl mx-auto space-y-12">
+                <div class="text-center reveal">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white font-heading mb-4">Choose Your <span class="gradient-text">Challenge</span></h1>
+                    <p class="text-lg text-slate-600 dark:text-brand-200/80 max-w-2xl mx-auto">Three simultaneous events designed to test your technical skills without a single sheet of paper. Choose wisely, you can only register for one.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="glass-panel p-8 rounded-[2rem] hover-card reveal flex flex-col relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-full blur-3xl group-hover:bg-brand-500/20 transition-all"></div>
+                        <div class="w-16 h-16 bg-gradient-to-br from-brand-100 to-teal-100 dark:from-brand-900/50 dark:to-teal-900/50 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-inner">💻</div>
+                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white mb-3 font-heading">Ink Free Web</h3>
+                        <p class="text-slate-600 dark:text-slate-300 flex-grow leading-relaxed">An offline web design competition focused on creating interactive sites that promote forest conservation and green technology.</p>
+                    </div>
+                    
+                    <div class="glass-panel p-8 rounded-[2rem] hover-card reveal flex flex-col relative overflow-hidden group delay-100">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 rounded-full blur-3xl group-hover:bg-teal-500/20 transition-all"></div>
+                        <div class="w-16 h-16 bg-gradient-to-br from-teal-100 to-cyan-100 dark:from-teal-900/50 dark:to-cyan-900/50 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-inner">📱</div>
+                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white mb-3 font-heading">Inkless Ideas</h3>
+                        <p class="text-slate-600 dark:text-slate-300 flex-grow leading-relaxed">An offline content summarization challenge conducted entirely on mobile devices to enhance eco-awareness and digital efficiency.</p>
+                    </div>
+
+                    <div class="glass-panel p-8 rounded-[2rem] hover-card reveal flex flex-col relative overflow-hidden group delay-200">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all"></div>
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-100 to-brand-100 dark:from-emerald-900/50 dark:to-brand-900/50 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-inner">💡</div>
+                        <h3 class="text-2xl font-bold text-slate-800 dark:text-white mb-3 font-heading">Think Inkless</h3>
+                        <p class="text-slate-600 dark:text-slate-300 flex-grow leading-relaxed">A digital idea (paperless paper) presentation showcasing innovative technological solutions to reduce paper usage in daily life.</p>
+                    </div>
+                </div>
+
+                <div class="bg-brand-50/80 dark:bg-[#064e3b]/80 backdrop-blur-sm p-8 rounded-3xl border border-brand-200 dark:border-green-700 reveal">
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 font-heading">General Guidelines</h3>
+                    <ul class="list-disc list-inside text-slate-600 dark:text-slate-300 space-y-3">
+                        <li><strong>Absolutely NO paper allowed.</strong> Using paper for notes, sketches, or scripts will result in immediate disqualification.</li>
+                        <li><strong>Format:</strong> All events are strictly for individual participants. No teams are permitted.</li>
+                        <li><strong>Capacity Caps:</strong> The event is capped at 150 participants total across all events. Register early to secure your spot!</li>
+                        <li><strong>Simultaneous Schedule:</strong> All three events occur at the same time. You may only register for ONE event.</li>
+                        <li><strong>For Ink Free Web:</strong> Please bring your own laptop for the session. During the web designing activity, you are allowed to use AI tools if you wish.</li>
+                        <li><strong>For Inkless Ideas:</strong>The Participants must bring their own mobile or laptop. The summary should be written in your <strong>Own Words</strong>. After completing the task, submit the <strong>Summary in Word format (.doc/.docx)</strong> by typing it in MS Word on your mobile or laptop.</li>
+                        <li><strong>For Think Inkless:</strong>The Participants must prepare a PowerPoint presentation on a digital idea (paperless paper) that helps reduce paper usage in daily life. The PPT should be submitted <strong>on or before 15th March.</strong> </li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+        
+        <main id="page-about" class="page">
+             <section class="max-w-4xl mx-auto space-y-12">
+                <div class="text-center reveal">
+                    <h1 class="text-4xl font-bold text-slate-900 dark:text-white font-heading">Meet the Organizers</h1>
+                    <p class="text-lg text-slate-500 dark:text-green-200 mt-2">Department of Information Technology</p>
+                </div>
+
+
+                 
+                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+                    <div class="glass-panel p-8 rounded-[2rem] hover-card text-center reveal delay-100">
+                        <div class="w-20 h-20 bg-gradient-to-br from-brand-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg">🕵🏻</div>
+                        <h4 class="text-xl font-bold text-slate-800 dark:text-white font-heading">Mr. Vishva S</h4>
+                        <div class="inline-block mt-2 px-3 py-1 bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300 text-xs font-bold uppercase rounded-full tracking-wider">Student Coordinator</div>
+                    </div>
+
+                    <div class="glass-panel p-8 rounded-[2rem] hover-card text-center reveal delay-200">
+                        <div class="w-20 h-20 bg-gradient-to-br from-teal-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg">🕵🏻</div>
+                        <h4 class="text-xl font-bold text-slate-800 dark:text-white font-heading">Mr. Girivaran C</h4>
+                        <div class="inline-block mt-2 px-3 py-1 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 text-xs font-bold uppercase rounded-full tracking-wider">Student Coordinator</div>
+                    </div>
+                </div>
+                 
+                 
+                 
+                 
+                 
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+                    <div class="glass-panel p-8 rounded-[2rem] hover-card text-center reveal delay-100">
+                        <div class="w-20 h-20 bg-gradient-to-br from-brand-400 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg">👩‍🏫</div>
+                        <h4 class="text-xl font-bold text-slate-800 dark:text-white font-heading">Mrs. S. Radhika</h4>
+                        <div class="inline-block mt-2 px-3 py-1 bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300 text-xs font-bold uppercase rounded-full tracking-wider">Faculty Coordinator</div>
+                    </div>
+
+                    <div class="glass-panel p-8 rounded-[2rem] hover-card text-center reveal delay-200">
+                        <div class="w-20 h-20 bg-gradient-to-br from-teal-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg">👩‍🏫</div>
+                        <h4 class="text-xl font-bold text-slate-800 dark:text-white font-heading">Mrs. S. Gowthami</h4>
+                        <div class="inline-block mt-2 px-3 py-1 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 text-xs font-bold uppercase rounded-full tracking-wider">Faculty Coordinator</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <main id="page-register" class="page">
+            <section class="max-w-3xl mx-auto glass-panel rounded-[2.5rem] p-8 md:p-12 reveal">
+                <div class="text-center mb-10">
+                    <h2 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2 font-heading">Digital <span class="gradient-text">Registration</span></h2>
+                    <p class="text-slate-600 dark:text-green-200">Secure your digital spot! Cap limited to 150 participants.</p>
+                </div>
+
+                <form id="registration-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-green-100 mb-2">Full Name</label>
+                            <input type="text" name="name" required class="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition shadow-sm" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-green-100 mb-2">Register Number</label>
+                            <input type="text" name="reg_no" required class="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition shadow-sm font-mono uppercase" placeholder="REG123456">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-green-100 mb-2">Email ID</label>
+                            <input type="email" name="email" required class="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition shadow-sm" placeholder="student@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-green-100 mb-2">Phone Number</label>
+                            <input type="tel" name="phone" required class="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition shadow-sm" placeholder="+91 9876543210">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-green-100 mb-2">Year of Study</label>
+                            <select name="year" required class="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition appearance-none shadow-sm">
+                                <option value="" disabled selected>Select Year...</option>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-green-100 mb-2">Department</label>
+                            <input type="text" name="department" value="B.Tech Information Technology" readonly class="w-full px-5 py-4 rounded-2xl border border-slate-300 dark:border-white/5 bg-slate-100/50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 cursor-not-allowed outline-none transition" title="This event is exclusively for the IT Department">
+                        </div>
+                    </div>
+
+<div>
+    <label class="block text-sm font-medium text-slate-700 dark:text-green-100 mb-2">Event Selection (Choose 1)</label>
+    <select name="event_choice" required class="w-full px-5 py-4 rounded-2xl border border-slate-300 dark:border-brand-500/30 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none transition appearance-none font-medium shadow-sm">
+        <option value="" disabled selected>Select an event...</option>
+        <option value="Ink Free Web">💻 Ink Free Web (Web Design)</option>
+        <option value="Inkless Ideas">📱 Inkless Ideas (Mobile Summary)</option>
+        <option value="Think Inkless">💡 Think Inkless (Idea Presentation)</option>
+    </select>
+</div>
+
+<div id="think-inkless-status" class="hidden mt-4 p-5 rounded-2xl bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/50 transition-all shadow-sm">
+    <div class="flex justify-between items-end mb-2">
+        <span class="text-sm font-semibold text-orange-800 dark:text-orange-200">Think Inkless Spots Filled</span>
+        <span id="inkless-count-text" class="text-lg font-bold text-orange-600 dark:text-orange-400 font-heading">0 / 25</span>
+    </div>
+    <div class="w-full bg-orange-200 dark:bg-orange-900/50 rounded-full h-2.5 mb-3 overflow-hidden shadow-inner">
+        <div id="inkless-progress-bar" class="bg-gradient-to-r from-orange-400 to-orange-500 h-2.5 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+    </div>
+    <p id="inkless-warning-msg" class="text-sm text-red-600 dark:text-red-400 font-medium hidden bg-red-50 dark:bg-red-900/20 p-3 rounded-xl border border-red-100 dark:border-red-800/30">
+        ⚠️ Maximum participants (25) reached for this event. Please try participating in another event.
+    </p>
+</div>
+
+                    
+                    <div class="pt-6">
+                        <button type="submit" id="submit-button" class="w-full py-4 bg-gradient-to-r from-brand-500 to-teal-500 hover:from-brand-600 hover:to-teal-600 text-white font-bold rounded-2xl shadow-xl transition-all text-lg transform hover:-translate-y-1">
+                            Complete Digital Registration
+                        </button>
+                    </div>
+                    <p class="text-xs text-center text-slate-500 dark:text-green-300 mt-4">By registering, you agree to abide by the zero-paper policy.</p>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <nav class="sm:hidden mobile-dock glass-panel">
+        <a href="#" class="mobile-icon-btn active" data-page="home">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            Home
+        </a>
+        <a href="#" class="mobile-icon-btn" data-page="details">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+            Events
+        </a>
+        <a href="#" class="mobile-icon-btn" data-page="register">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+            Register
+        </a>
+        <a href="#" class="mobile-icon-btn" data-page="about">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            Team
+        </a>
+    </nav>
+
+    <div id="loading-backdrop" class="flex"><div class="spinner"></div></div>
+    
+    <div id="modal-backdrop" class="flex">
+        <div id="success-modal" class="ticket-card bg-white dark:bg-[#064e3b] w-full max-w-sm mx-4 p-0 rounded-3xl shadow-2xl overflow-hidden hidden transform transition-all">
+             <div class="bg-brand-600 p-5 text-center">
+                 <h2 class="text-xl font-bold text-white tracking-wide uppercase">Digital Pass</h2>
+                 <p class="text-brand-100 text-xs mt-1">Paperless Day 2026</p>
+             </div>
+             <div class="p-8 text-center bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+                 <div id="qrcode" class="flex justify-center mb-6 bg-white p-3 rounded-xl inline-block mx-auto shadow-sm border border-slate-100"></div>
+                 <h3 id="pass-name" class="text-xl font-bold text-slate-900 dark:text-white uppercase mb-1 font-heading">Name</h3>
+                 <p id="pass-event" class="text-sm text-brand-600 dark:text-brand-400 font-bold mb-1">Event</p>
+                 <div class="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-600 dark:text-slate-300 font-mono tracking-wider mt-1" id="pass-reg">Reg No</div>
+                 <div class="mt-6 pt-6 border-t border-dashed border-slate-300 dark:border-green-700">
+                     <p class="text-xs text-slate-400 dark:text-green-300 mb-4">Screenshot this digital pass for entry.</p>
+                     <button onclick="closeModal()" class="w-full py-3.5 bg-slate-900 dark:bg-white dark:text-[#064e3b] text-white font-bold rounded-xl shadow-lg transition-colors">Done</button>
+                 </div>
+             </div>
+        </div>
+
+        <div id="error-modal" class="glass-panel p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center hidden">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6"><svg class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></div>
+            <h3 class="text-2xl font-bold text-slate-800 dark:text-white font-heading">Submission Failed</h3>
+            <p class="text-slate-600 dark:text-green-200 mt-2" id="error-message">Something went wrong.</p>
+            <button onclick="closeModal()" class="mt-6 w-full py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-colors">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. COUNTDOWN TIMER ---
+        const eventDate = new Date("March 17, 2026 09:00:00").getTime();
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+            if (distance < 0) {
+                document.getElementById("countdown").innerHTML = "<div class='text-brand-500 font-bold text-2xl font-heading'>Event has Started!</div>";
+                return;
+            }
+            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById("mins").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // --- 2. SCROLL REVEAL ANIMATIONS ---
+        function triggerReveals() {
+            document.querySelectorAll('.page.active .reveal').forEach((reveal, index) => {
+                setTimeout(() => reveal.classList.add('active'), index * 100);
+            });
+        }
+
+        // --- 3. PAGE NAVIGATION ---
+        const pages = document.querySelectorAll('.page');
+        const navLinks = document.querySelectorAll('.nav-link, .mobile-icon-btn, .nav-link-button');
+        function showPage(id) {
+            pages.forEach(p => {
+                p.classList.remove('active');
+                p.querySelectorAll('.reveal').forEach(r => r.classList.remove('active'));
+            });
+            const target = document.getElementById(`page-${id}`);
+            if(target) {
+                target.classList.add('active');
+                setTimeout(triggerReveals, 50); // Trigger reveals after page shows
+            }
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('text-brand-500', l.dataset.page === id));
+            document.querySelectorAll('.mobile-icon-btn').forEach(b => b.classList.toggle('active', b.dataset.page === id));
+            window.scrollTo(0,0);
+        }
+        navLinks.forEach(l => l.addEventListener('click', (e) => { e.preventDefault(); showPage(l.dataset.page); }));
+        setTimeout(triggerReveals, 100); // Initial trigger for home page
+
+        // --- 4. TOAST NOTIFICATIONS ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = type === 'success' ? 'bg-emerald-500 text-white shadow-emerald-500/20' : 'bg-red-500 text-white shadow-red-500/20';
+            toast.className = `${colors} pointer-events-auto min-w-[300px] max-w-sm px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 transform translate-x-10 opacity-0 transition-all duration-300 ease-out border border-white/10 backdrop-blur-md`;
+            toast.innerHTML = `<div class="bg-white/20 rounded-full p-1">${type === 'success' ? '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>' : '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>'}</div><div class="flex-1 text-sm font-semibold tracking-wide">${message}</div>`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-x-10', 'opacity-0'));
+            setTimeout(() => { toast.classList.add('translate-x-10', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 4000);
+        }
+
+        // --- 5. THEME LOGIC ---
+        const html = document.documentElement;
+        const themeBtns = document.querySelectorAll('#theme-toggle, #theme-toggle-mobile');
+        function syncThemeUI(isDark) {
+            isDark ? html.classList.add('dark') : html.classList.remove('dark');
+            themeBtns.forEach(btn => {
+                const sun = btn.querySelector('svg:first-child');
+                const moon = btn.querySelector('svg:last-child');
+                if(isDark) { sun.classList.remove('hidden'); moon.classList.add('hidden'); }
+                else { sun.classList.add('hidden'); moon.classList.remove('hidden'); }
+            });
+        }
+        function toggleTheme() {
+            const isDark = !html.classList.contains('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            syncThemeUI(isDark);
+        }
+        const savedTheme = localStorage.theme;
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        syncThemeUI(savedTheme === 'dark' || (!savedTheme && systemDark));
+        themeBtns.forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); toggleTheme(); }));
+
+        // --- 6. GOOGLE SHEETS FORM SUBMISSION ---
+        const form = document.getElementById("registration-form"), 
+              submitBtn = document.getElementById("submit-button"), 
+              loading = document.getElementById("loading-backdrop"), 
+              modalBack = document.getElementById("modal-backdrop"), 
+              successModal = document.getElementById("success-modal"), 
+              errorModal = document.getElementById("error-modal");
+
+        // YOUR EXACT GOOGLE SCRIPT WEB APP URL
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzX_gxLkRJu5r3-QrFgmrXdQ_sOgBqvAza0WFGDzgXTMTg6NXFaQpy8e6Vh_W_BhA75Xw/exec';
+
+        if (form) {
+            form.addEventListener("submit", e => {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const leadName = formData.get("name");
+                const regNo = formData.get("reg_no");
+                const eventChoice = formData.get("event_choice");
+                
+                submitBtn.disabled = true; 
+                submitBtn.innerHTML = `<span class="animate-pulse">Processing...</span>`; 
+                loading.style.display = "flex";
+                
+                fetch(scriptURL, { method: 'POST', body: formData })
+                    .then(response => response.json())
+                    .then(data => {
+                        loading.style.display = "none";
+                        modalBack.style.display = "flex";
+                        
+                        if (data.result === 'success') {
+                            successModal.classList.remove('hidden'); 
+                            successModal.classList.add('block');
+                            
+                            const qrContainer = document.getElementById("qrcode"); 
+                            qrContainer.innerHTML = "";
+                            
+                            requestAnimationFrame(() => {
+                                new QRCode(qrContainer, { 
+                                    text: "PAPERLESS-" + regNo + "-" + eventChoice.replace(/\s/g, ''), 
+                                    width: 140, 
+                                    height: 140, 
+                                    colorDark : "#000000", 
+                                    colorLight : "#ffffff", 
+                                    correctLevel : QRCode.CorrectLevel.H 
+                                });
+                            });
+                            
+                            document.getElementById('pass-name').innerText = leadName; 
+                            document.getElementById('pass-reg').innerText = regNo;
+                            document.getElementById('pass-event').innerText = eventChoice;
+                            
+                            form.reset(); 
+                            showToast("Registration & E-Ticket Sent!");
+                        } else {
+                            errorModal.classList.remove('hidden');
+                            errorModal.classList.add('block');
+                            document.getElementById('error-message').innerText = "Database error. Please try again.";
+                        }
+                    })
+                    .catch(error => {
+                        loading.style.display = "none";
+                        modalBack.style.display = "flex";
+                        errorModal.classList.remove('hidden');
+                        errorModal.classList.add('block');
+                        document.getElementById('error-message').innerText = "Network error. Check your connection.";
+                    })
+                    .finally(() => {
+                        submitBtn.disabled = false; 
+                        submitBtn.textContent = "Complete Digital Registration";
+                    });
+            });
+        }
+
+        function closeModal() {
+            modalBack.style.display = "none"; 
+            successModal.classList.add('hidden'); 
+            successModal.classList.remove('block'); 
+            errorModal.classList.add('hidden'); 
+            errorModal.classList.remove('block');
+        }
+
+        // --- 7. PARTICLES ---
+        tsParticles.load("particles-container", { fpsLimit: 60, particles: { color: { value: "#22c55e" }, links: { color: "#14b8a6", distance: 150, enable: true, opacity: 0.2, width: 1 }, move: { enable: true, speed: 1 }, number: { density: { enable: true, area: 800 }, value: 40 }, opacity: { value: 0.5 }, size: { value: { min: 1, max: 3 } } }, detectRetina: true });
+    </script>
+</body>
+</html>
